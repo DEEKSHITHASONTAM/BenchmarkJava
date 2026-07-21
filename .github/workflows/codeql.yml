@@ -1,13 +1,11 @@
-name: "CodeQL D6 Default"
+name: "CodeQL D6 Default Java"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "master" ]
 
 jobs:
   analyze:
-    name: CodeQL Java Default
+    name: CodeQL D6 Default Java
     runs-on: ubuntu-latest
 
     permissions:
@@ -29,7 +27,14 @@ jobs:
       - name: Build with Maven
         run: mvn -B clean package -DskipTests
 
-      - name: Perform CodeQL Analysis
+      - name: Perform CodeQL Analysis and save SARIF
         uses: github/codeql-action/analyze@v4
         with:
           category: "/d6-default/java"
+          output: codeql-results
+
+      - name: Upload CodeQL SARIF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: d6-default-java-sarif
+          path: codeql-results
